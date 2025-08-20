@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import API from "../api/axios"; // ✅ your axios instance
+import API from "../../api/axios"; // ✅ your axios instance
 
 export default function EditProfileForm({ user, onSuccess }) {
   const [formData, setFormData] = useState({
