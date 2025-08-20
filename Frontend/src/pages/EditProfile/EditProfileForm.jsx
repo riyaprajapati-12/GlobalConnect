@@ -59,7 +59,11 @@ export default function EditProfileForm({ user, onUpdate }) {
     if (formData.bannerPic) data.append("bannerPic", formData.bannerPic);
 
     try {
-      const res = await API.put(`/users/edit/${user._id}`, data, {
+      const userId = localStorage.getItem("userId"); // ✅ get from localStorage
+  if (!userId) {
+    throw new Error("User ID not found in localStorage");
+  }
+      const res = await API.put(`/users/edit/${userId}`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       onUpdate(res.data); // update parent
