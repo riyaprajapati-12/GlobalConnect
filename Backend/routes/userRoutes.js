@@ -73,7 +73,7 @@ router.get("/:id/connections",authMiddleware, async (req, res) => {
 
 router.put(
   "/edit",
-  auth,
+  authMiddleware,
   upload.fields([
     { name: "profilePic", maxCount: 1 },
     { name: "bannerPic", maxCount: 1 },
