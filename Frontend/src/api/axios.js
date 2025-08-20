@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:8080/api", // backend ka base URL
+  baseURL: "https://globalconnect-aatv.onrender.com/api", // backend ka base URL
 });
 
 // Agar token chahiye to har request me add karne ke liye:

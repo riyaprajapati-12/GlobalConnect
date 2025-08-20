@@ -9,7 +9,7 @@ function addUniqueMessages(existingMessages, newMessages) {
   return [...existingMessages, ...newMessages.filter(m => !existingIds.has(m._id))];
 }
 
-const socket = io("http://localhost:8080"); // backend URL
+const socket = io("https://globalconnect-aatv.onrender.com"); // backend URL
 
 export default function ChatApp() {
   const navigate = useNavigate();
