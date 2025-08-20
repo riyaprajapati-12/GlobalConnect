@@ -10,7 +10,17 @@ exports.getUserProfile = async (req, res) => {
     }
 };
 
+exports.getConnectionAccepted = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id)
+      .populate("connections", "name email profilePic");
 
+    res.json(user.connections);  // accepted connections list bhej dega
+  } catch (error) {
+    console.error("Error fetching accepted connections:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
 exports.updateUserProfile = async (req, res) => {
   try {

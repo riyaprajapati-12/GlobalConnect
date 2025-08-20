@@ -7,7 +7,9 @@ const {
     sendConnectionRequest,
     acceptConnectionRequest,
     getAllUsers,
-    getAllConnections
+    getAllConnections,
+    getConnectionAccepted
+    
 } = require("../controllers/userController");
 const User = require("../models/User");
 const router = express.Router();
@@ -31,17 +33,7 @@ router.post("/connections/accept", authMiddleware, acceptConnectionRequest);
 
 router.get("/connections/requests", authMiddleware, getAllConnections);
 
-router.get("/connections/accepted", authMiddleware, async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id)
-      .populate("connections", "name email profilePic");
-
-    res.json(user.connections);  // accepted connections list bhej dega
-  } catch (error) {
-    console.error("Error fetching accepted connections:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-});
+router.get("/connections/accepted", authMiddleware, getConnectionAccepted);
 
 router.get("/:id/connections",authMiddleware, async (req, res) => {
   try {
