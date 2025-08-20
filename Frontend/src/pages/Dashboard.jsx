@@ -103,20 +103,20 @@ export default function Dashboard() {
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-olive-50 via-white to-olive-100">
       {/* Decorative abstract background */}
       <div className="absolute inset-0 -z-10">
-        <div className="absolute top-[-100px] left-[-100px] w-[350px] h-[350px] rounded-full bg-olive-200 blur-[140px] opacity-40" />
-        <div className="absolute bottom-[-120px] right-[-80px] w-[400px] h-[400px] rounded-full bg-olive-300 blur-[160px] opacity-30" />
-        <div className="absolute top-[40%] left-[50%] -translate-x-1/2 w-[280px] h-[280px] rounded-full bg-olive-200 blur-[100px] opacity-20" />
+        <div className="absolute top-[-100px] left-[-100px] w-[300px] h-[300px] md:w-[350px] md:h-[350px] rounded-full bg-olive-200 blur-[120px] md:blur-[140px] opacity-40" />
+        <div className="absolute bottom-[-120px] right-[-80px] w-[320px] h-[320px] md:w-[400px] md:h-[400px] rounded-full bg-olive-300 blur-[120px] md:blur-[160px] opacity-30" />
+        <div className="absolute top-[40%] left-[50%] -translate-x-1/2 w-[220px] h-[220px] md:w-[280px] md:h-[280px] rounded-full bg-olive-200 blur-[80px] md:blur-[100px] opacity-20" />
       </div>
 
       {/* TopBar */}
-      <div className="sticky top-0 z-20 backdrop-blur-md bg-white/60 shadow-sm border-b border-olive-100">
+      <div className="sticky top-0 z-20 backdrop-blur-md bg-white/70 shadow-sm border-b border-olive-100">
         <TopBar user={user} onLogout={handleLogout} />
       </div>
 
       {/* Grid Layout */}
-      <div className="grid grid-cols-12 max-w-full mx-auto mt-6 px-2 gap-10">
-        {/* Left Sidebar */}
-        <div className="col-span-3 hidden lg:block">
+      <div className="grid grid-cols-12 max-w-7xl mx-auto mt-4 px-2 sm:px-4 gap-4 md:gap-6 lg:gap-10">
+        {/* Left Sidebar (Connections) */}
+        <div className="col-span-12 md:col-span-4 lg:col-span-3 hidden md:block">
           <div className="bg-white/70 backdrop-blur-md rounded-2xl shadow-md p-4 border border-olive-100 max-h-[80vh] overflow-y-auto">
             <h2 className="text-lg font-semibold text-olive-800 mb-3">
               Your Connections
@@ -126,21 +126,21 @@ export default function Dashboard() {
         </div>
 
         {/* Feed */}
-        <div className="col-span-12 lg:col-span-6 space-y-6">
+        <div className="col-span-12 lg:col-span-6 space-y-4 sm:space-y-6">
           {/* Create Post Input */}
           <div
             onClick={() => setShowCreatePost(true)}
-            className="bg-white/70 backdrop-blur-md border border-olive-100 rounded-xl p-4 flex items-center gap-3 cursor-pointer shadow hover:shadow-lg transition"
+            className="bg-white/70 backdrop-blur-md border border-olive-100 rounded-xl p-3 sm:p-4 flex items-center gap-2 sm:gap-3 cursor-pointer shadow hover:shadow-lg transition"
           >
             <img
               src={user.profilePic || "/default-avatar.png"}
               alt="user avatar"
-              className="w-10 h-10 rounded-full object-cover border"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover border"
             />
-            <div className="flex-1 bg-olive-50 text-olive-600 px-4 py-2 rounded-full border border-olive-200 hover:bg-olive-100 transition">
+            <div className="flex-1 text-sm sm:text-base bg-olive-50 text-olive-600 px-3 sm:px-4 py-2 rounded-full border border-olive-200 hover:bg-olive-100 transition truncate">
               ✨ What's on your mind, {user.name.split(" ")[0]}?
             </div>
-            <Plus className="w-5 h-5 text-olive-500" />
+            <Plus className="w-5 h-5 text-olive-500 flex-shrink-0" />
           </div>
 
           {/* Posts */}
@@ -153,8 +153,8 @@ export default function Dashboard() {
           )}
         </div>
 
-        {/* Right Sidebar */}
-        <div className="col-span-3 hidden lg:block">
+        {/* Right Sidebar (Suggested Users) */}
+        <div className="col-span-12 md:col-span-4 lg:col-span-3 hidden md:block">
           <div className="bg-white/70 backdrop-blur-md rounded-2xl shadow-md p-4 border border-olive-100 max-h-[80vh] overflow-y-auto">
             <h2 className="text-lg font-semibold text-olive-800 mb-3">
               Suggested For You
@@ -167,17 +167,17 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Floating Create Button (Mobile) */}
+      {/* Floating Create Button (Mobile Only) */}
       <button
         onClick={() => setShowCreatePost(true)}
-        className="fixed lg:hidden bottom-6 right-6 bg-olive-600 text-white rounded-full shadow-lg w-14 h-14 flex items-center justify-center hover:bg-olive-700 transition z-30"
+        className="fixed lg:hidden bottom-6 right-6 bg-olive-600 text-white rounded-full shadow-lg w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center hover:bg-olive-700 transition z-30"
       >
         <Plus className="w-6 h-6" />
       </button>
 
       {/* Modal */}
       {showCreatePost && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-2 sm:p-4">
           <div className="bg-white rounded-2xl w-full max-w-lg relative shadow-xl border border-olive-200 animate-fadeInUp">
             <button
               onClick={() => setShowCreatePost(false)}
