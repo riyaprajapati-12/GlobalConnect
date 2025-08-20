@@ -59,7 +59,7 @@ export default function EditProfileForm({ user, onUpdate }) {
     if (formData.bannerPic) data.append("bannerPic", formData.bannerPic);
 
     try {
-      const res = await API.put(`/user/edit/${user._id}`, data, {
+      const res = await API.put(`/users/edit/${user._id}`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       onUpdate(res.data); // update parent
