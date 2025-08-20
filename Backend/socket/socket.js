@@ -3,7 +3,7 @@ const { Server } = require("socket.io");
 function setupSocket(server) {
     const io = new Server(server, {
         cors: {
-            origin: "http://localhost:5173", // frontend
+            origin: "https://global-connect-ten.vercel.app", // frontend
             methods: ["GET", "POST"]
         }
     });
