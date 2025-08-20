@@ -13,11 +13,16 @@ exports.editUserProfile = async (req, res) => {
   try {
     let updateData = { ...req.body };
 
-    // ✅ Parse JSON fields (if sent as strings from frontend form-data)
-    if (updateData.skills) updateData.skills = JSON.parse(updateData.skills);
-    if (updateData.experience) updateData.experience = JSON.parse(updateData.experience);
-    if (updateData.education) updateData.education = JSON.parse(updateData.education);
-    if (updateData.socialLinks) updateData.socialLinks = JSON.parse(updateData.socialLinks);
+    // ✅ Parse JSON fields safely (only if string)
+    if (updateData.skills && typeof updateData.skills === "string") {
+      updateData.skills = JSON.parse(updateData.skills);
+    }
+    if (updateData.experience && typeof updateData.experience === "string") {
+      updateData.experience = JSON.parse(updateData.experience);
+    }
+    if (updateData.education && typeof updateData.education === "string") {
+      updateData.education = JSON.parse(updateData.education);
+    }
 
     // ✅ Upload Profile Pic (if new one uploaded)
     if (req.files?.profilePic) {
@@ -59,6 +64,7 @@ exports.editUserProfile = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 exports.getConnectionAccepted = async (req, res) => {
   try {
     const user = await User.findById(req.user.id)
