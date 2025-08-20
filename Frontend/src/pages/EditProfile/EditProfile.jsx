@@ -5,20 +5,30 @@ export default function EditProfile({ user, closeModal }) {
   const [formData, setFormData] = useState({
     name: "",
     bio: "",
-    profilePic: "",
-    bannerPic: "",
     skills: [],
+    profilePic: null,
+    bannerPic: null,
   });
 
-  // Pre-fill form when user data is available
+  // Preview images
+  const [preview, setPreview] = useState({
+    profilePic: "",
+    bannerPic: "",
+  });
+
+  // Pre-fill form
   useEffect(() => {
     if (user) {
       setFormData({
         name: user.name || "",
         bio: user.bio || "",
+        skills: user.skills || [],
+        profilePic: null,
+        bannerPic: null,
+      });
+      setPreview({
         profilePic: user.profilePic || "",
         bannerPic: user.bannerPic || "",
-        skills: user.skills || [],
       });
     }
   }, [user]);
@@ -26,10 +36,19 @@ export default function EditProfile({ user, closeModal }) {
   // Input change handler
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // File input change handler
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    if (files && files[0]) {
+      setFormData((prev) => ({ ...prev, [name]: files[0] }));
+      setPreview((prev) => ({
+        ...prev,
+        [name]: URL.createObjectURL(files[0]),
+      }));
+    }
   };
 
   // Skills input (comma separated)
@@ -45,11 +64,23 @@ export default function EditProfile({ user, closeModal }) {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      await API.put(`/users/edit/${user._id}`, formData, {
-        headers: { Authorization: `Bearer ${token}` },
+
+      const data = new FormData();
+      data.append("name", formData.name);
+      data.append("bio", formData.bio);
+      data.append("skills", JSON.stringify(formData.skills));
+      if (formData.profilePic) data.append("profilePic", formData.profilePic);
+      if (formData.bannerPic) data.append("bannerPic", formData.bannerPic);
+
+      await API.put(`/users/edit/${user._id}`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
       });
+
       alert("Profile updated successfully ✅");
-      closeModal(); // close modal after success
+      closeModal();
     } catch (error) {
       console.error(error);
       alert("❌ Error updating profile");
@@ -85,24 +116,38 @@ export default function EditProfile({ user, closeModal }) {
 
         {/* Profile Pic */}
         <div>
-          <label className="block font-medium text-olive-800">Profile Picture URL</label>
+          <label className="block font-medium text-olive-800">Profile Picture</label>
+          {preview.profilePic && (
+            <img
+              src={preview.profilePic}
+              alt="Profile Preview"
+              className="w-20 h-20 rounded-full mb-2 object-cover"
+            />
+          )}
           <input
-            type="text"
+            type="file"
             name="profilePic"
-            value={formData.profilePic}
-            onChange={handleChange}
+            accept="image/*"
+            onChange={handleFileChange}
             className="w-full p-2 border rounded-lg"
           />
         </div>
 
         {/* Banner Pic */}
         <div>
-          <label className="block font-medium text-olive-800">Banner Picture URL</label>
+          <label className="block font-medium text-olive-800">Banner Picture</label>
+          {preview.bannerPic && (
+            <img
+              src={preview.bannerPic}
+              alt="Banner Preview"
+              className="w-full h-24 rounded-lg mb-2 object-cover"
+            />
+          )}
           <input
-            type="text"
+            type="file"
             name="bannerPic"
-            value={formData.bannerPic}
-            onChange={handleChange}
+            accept="image/*"
+            onChange={handleFileChange}
             className="w-full p-2 border rounded-lg"
           />
         </div>
