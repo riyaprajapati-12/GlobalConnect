@@ -43,7 +43,7 @@ router.get("/connections/accepted", authMiddleware, async (req, res) => {
   }
 });
 
-router.get("/:id/connections", async (req, res) => {
+router.get("/:id/connections",authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.params.id)
       .populate("connections", "name profilePic"); // sirf name & pic bhejna
@@ -56,6 +56,24 @@ router.get("/:id/connections", async (req, res) => {
   }
 });
 
+router.put("/edit/:id",authMiddleware, async (req, res) => {
+  try {
+    const { id } = req.params;
 
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { $set: req.body }, // req.body may include bio, profilePic, experience, etc.
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ message: "Profile updated successfully", user: updatedUser });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating profile", error: error.message });
+  }
+});
 
 module.exports = router;

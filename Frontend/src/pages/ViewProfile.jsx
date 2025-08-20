@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { Home } from "lucide-react";
+import { Home, Edit } from "lucide-react";
 import API from "../api/axios";
 import { useParams, useNavigate } from "react-router-dom";
 import JobPostForm from "./create_job_post_form";
 import { motion, AnimatePresence } from "framer-motion";
 import MyJobs from "./MyJobs/MyJobs";
 import Myposts from "./Myposts/Myposts";
+import EditProfile from "./EditProfile/EditProfile";
 
 export default function ViewProfile() {
   const { id } = useParams();
@@ -15,6 +16,7 @@ export default function ViewProfile() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showJobForm, setShowJobForm] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -40,7 +42,7 @@ export default function ViewProfile() {
       }
     };
     fetchProfile();
-  }, [id]);
+  }, [id, showEditForm]); // refresh after edit
 
   if (loading)
     return (
@@ -58,7 +60,7 @@ export default function ViewProfile() {
       <div className="max-w-7xl mx-auto grid grid-cols-12 gap-6">
         {/* Left Main Content */}
         <div className="col-span-12 lg:col-span-9 space-y-6">
-          <div className="bg-olive-100 rounded-2xl shadow-xl overflow-hidden">
+          <div className="bg-olive-100 rounded-2xl shadow-xl overflow-hidden relative">
             {/* Banner */}
             {user.bannerPic ? (
               <div className="h-48 w-full relative overflow-hidden">
@@ -84,6 +86,15 @@ export default function ViewProfile() {
                 </button>
               </div>
             )}
+
+            {/* Edit Profile Button */}
+            <button
+              onClick={() => setShowEditForm(true)}
+              className="absolute top-4 right-4 p-2 bg-white/80 text-olive-800 rounded-full hover:bg-white transition flex items-center space-x-1"
+            >
+              <Edit className="w-5 h-5" />
+              <span className="hidden sm:inline text-sm font-medium">Edit</span>
+            </button>
 
             {/* Profile Info */}
             <div className="relative px-6">
@@ -169,7 +180,7 @@ export default function ViewProfile() {
               <div className="mt-6 mb-4 bg-olive-50 shadow rounded-lg p-4">
                 <h3 className="font-semibold text-olive-800 mb-4">Posts</h3>
                 {posts.length > 0 ? (
-                  posts.map((post) => <Myposts key={post._id} post={post}  />)
+                  posts.map((post) => <Myposts key={post._id} post={post} />)
                 ) : (
                   <p className="text-olive-500">No posts yet</p>
                 )}
@@ -214,6 +225,33 @@ export default function ViewProfile() {
                 ✕
               </button>
               <JobPostForm />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Edit Profile Modal */}
+      <AnimatePresence>
+        {showEditForm && (
+          <motion.div
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="bg-white rounded-2xl p-6 w-full max-w-lg shadow-xl relative overflow-y-auto max-h-[90vh]"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+            >
+              <button
+                onClick={() => setShowEditForm(false)}
+                className="absolute top-3 right-3 text-gray-600 hover:text-gray-900"
+              >
+                ✕
+              </button>
+              <EditProfile user={user} closeModal={() => setShowEditForm(false)} />
             </motion.div>
           </motion.div>
         )}

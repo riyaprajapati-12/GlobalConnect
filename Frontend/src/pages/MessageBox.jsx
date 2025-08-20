@@ -41,7 +41,7 @@ export default function ChatApp() {
     fetchConnections();
   }, []);
 
-  // Socket listener for real-time messages (with cleanup)
+  // Socket listener for real-time messages 
   useEffect(() => {
     if (!currentUserId) return;
 
