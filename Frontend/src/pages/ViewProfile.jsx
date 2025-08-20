@@ -253,7 +253,7 @@ export default function ViewProfile() {
               </button>
               <EditProfileForm
                 user={user}
-                onSuccess={(updatedUser) => {
+                onUpdate={(updatedUser) => {
                   setUser(updatedUser);
                   setShowEditForm(false);
                 }}
