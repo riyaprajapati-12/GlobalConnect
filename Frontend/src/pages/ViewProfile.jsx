@@ -6,7 +6,7 @@ import JobPostForm from "./create_job_post_form";
 import { motion, AnimatePresence } from "framer-motion";
 import MyJobs from "./MyJobs/MyJobs";
 import Myposts from "./Myposts/Myposts";
-import EditProfile from "./EditProfile/EditProfile";
+import EditProfileForm from "./EditProfile/EditProfileForm";
 
 export default function ViewProfile() {
   const { id } = useParams();
@@ -251,7 +251,13 @@ export default function ViewProfile() {
               >
                 ✕
               </button>
-              <EditProfile user={user} closeModal={() => setShowEditForm(false)} />
+              <EditProfileForm
+                user={user}
+                onSuccess={(updatedUser) => {
+                  setUser(updatedUser);
+                  setShowEditForm(false);
+                }}
+              />
             </motion.div>
           </motion.div>
         )}

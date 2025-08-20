@@ -8,7 +8,8 @@ const {
     acceptConnectionRequest,
     getAllUsers,
     getAllConnections,
-    getConnectionAccepted
+    getConnectionAccepted,
+    editUserProfile
     
 } = require("../controllers/userController");
 const User = require("../models/User");
@@ -33,7 +34,9 @@ router.post("/connections/accept", authMiddleware, acceptConnectionRequest);
 
 router.get("/connections/requests", authMiddleware, getAllConnections);
 
-router.get("/connections/accepted", authMiddleware, getConnectionAccepted);
+router.get("/connections/accepted", authMiddleware, getConnectionAccepted
+
+);
 
 router.get("/:id/connections",authMiddleware, async (req, res) => {
   try {
@@ -48,24 +51,33 @@ router.get("/:id/connections",authMiddleware, async (req, res) => {
   }
 });
 
-router.put("/edit/:id",authMiddleware, async (req, res) => {
-  try {
-    const { id } = req.params;
+// router.put("/edit/:id",authMiddleware, async (req, res) => {
+//   try {
+//     const { id } = req.params;
 
-    const updatedUser = await User.findByIdAndUpdate(
-      id,
-      { $set: req.body }, // req.body may include bio, profilePic, experience, etc.
-      { new: true, runValidators: true }
-    );
+//     const updatedUser = await User.findByIdAndUpdate(
+//       id,
+//       { $set: req.body }, // req.body may include bio, profilePic, experience, etc.
+//       { new: true, runValidators: true }
+//     );
 
-    if (!updatedUser) {
-      return res.status(404).json({ message: "User not found" });
-    }
+//     if (!updatedUser) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
 
-    res.status(200).json({ message: "Profile updated successfully", user: updatedUser });
-  } catch (error) {
-    res.status(500).json({ message: "Error updating profile", error: error.message });
-  }
-});
+//     res.status(200).json({ message: "Profile updated successfully", user: updatedUser });
+//   } catch (error) {
+//     res.status(500).json({ message: "Error updating profile", error: error.message });
+//   }
+// });
 
+router.put(
+  "/edit",
+  auth,
+  upload.fields([
+    { name: "profilePic", maxCount: 1 },
+    { name: "bannerPic", maxCount: 1 },
+  ]),
+  editUserProfile
+);
 module.exports = router;

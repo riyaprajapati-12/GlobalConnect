@@ -9,7 +9,56 @@ exports.getUserProfile = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+exports.editUserProfile = async (req, res) => {
+  try {
+    let updateData = { ...req.body };
 
+    // ✅ Parse JSON fields (if sent as strings from frontend form-data)
+    if (updateData.skills) updateData.skills = JSON.parse(updateData.skills);
+    if (updateData.experience) updateData.experience = JSON.parse(updateData.experience);
+    if (updateData.education) updateData.education = JSON.parse(updateData.education);
+    if (updateData.socialLinks) updateData.socialLinks = JSON.parse(updateData.socialLinks);
+
+    // ✅ Upload Profile Pic (if new one uploaded)
+    if (req.files?.profilePic) {
+      const result = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { folder: "profile_pics" },
+          (error, result) => (error ? reject(error) : resolve(result))
+        );
+        stream.end(req.files.profilePic[0].buffer);
+      });
+      updateData.profilePic = result.secure_url;
+    }
+
+    // ✅ Upload Banner Pic (if new one uploaded)
+    if (req.files?.bannerPic) {
+      const result = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { folder: "banner_pics" },
+          (error, result) => (error ? reject(error) : resolve(result))
+        );
+        stream.end(req.files.bannerPic[0].buffer);
+      });
+      updateData.bannerPic = result.secure_url;
+    }
+
+    // ✅ Update User in DB
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user.id,       // logged in user (secure)
+      { $set: updateData },
+      { new: true }
+    ).select("-password");
+
+    res.json({
+      msg: "Profile updated successfully",
+      user: updatedUser
+    });
+  } catch (error) {
+    console.error("Edit Profile Error:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
 exports.getConnectionAccepted = async (req, res) => {
   try {
     const user = await User.findById(req.user.id)
